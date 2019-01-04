@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
 )
@@ -123,6 +124,10 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	if resp.Body != nil {
 		defer resp.Body.Close()
 	}
+
+
+	bodyText, _ := ioutil.ReadAll(resp.Body)
+	fmt.Printf("Body is %v", string(bodyText))
 
 	if c := resp.StatusCode; c < 200 || c > 299 {
 		return nil, handleResponseErr(resp)

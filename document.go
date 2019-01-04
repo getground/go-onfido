@@ -52,6 +52,8 @@ type Document struct {
 	FileSize     int          `json:"file_size,omitempty"`
 	Type         DocumentType `json:"type,omitempty"`
 	Side         DocumentSide `json:"side,omitempty"`
+
+	// Messages []string `json:"messages,omitempty"`
 }
 
 // Documents represents a list of documents from the Onfido API
