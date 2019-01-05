@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"io/ioutil"
+	// "io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
 )
@@ -110,6 +110,7 @@ func (c *Client) newRequest(method, uri string, body io.Reader) (*http.Request, 
 	return req, nil
 }
 
+
 func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
 	req.WithContext(ctx)
 	resp, err := c.HTTPClient.Do(req)
@@ -126,22 +127,40 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	}
 
 
-	bodyText, _ := ioutil.ReadAll(resp.Body)
-	fmt.Printf("Body is %v", string(bodyText))
+	// bodyText, _ := ioutil.ReadAll(resp.Body)
+	// fmt.Printf("Body is %v", string(bodyText))
+	// fmt.Printf("Status code is %d\n", resp.StatusCode)
 
 	if c := resp.StatusCode; c < 200 || c > 299 {
 		return nil, handleResponseErr(resp)
 	}
 
+
+
 	if v != nil {
 		if w, ok := v.(io.Writer); ok {
+			// fmt.Println("io copy")
 			_, err = io.Copy(w, resp.Body)
 		} else if isJSONResponse(resp) {
+			// fmt.Println("is json resp")
+			// data, err := ioutil.ReadAll(resp.Body)
+			// if err != nil {
+			// 	fmt.Printf("err in do json is %v", err)
+			// 	return resp, err
+			// }
+			// err = json.Unmarshal(data, v)
 			err = json.NewDecoder(resp.Body).Decode(v)
 		} else {
 			err = fmt.Errorf("unable to parse respose body into %T", v)
 		}
 	}
+	// err = json.NewDecoder(resp.Body).Decode(v)
+	// fmt.Printf("err in do is %v", err)
+	// var bodyMap map[string]interface{}
+  // err = json.Unmarshal(body, &bodyMap)
+  // if err != nil {
+  //   return err
+  // }
 
 	return resp, err
 }

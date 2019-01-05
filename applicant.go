@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+
+	// "io/ioutil"
 )
 
 // IDNumberType represents an ID type (ssn, social insurance, etc)
@@ -69,9 +71,27 @@ func (c *Client) CreateApplicant(ctx context.Context, a Applicant) (*Applicant, 
 		return nil, err
 	}
 
-	var resp Applicant
-	_, err = c.do(ctx, req, &resp)
-	return &resp, err
+	var result Applicant
+	_, err = c.do(ctx, req, &result)
+	if err != nil {
+		return &result, err
+	}
+	// defer resp.Body.Close()
+	// body, err := ioutil.ReadAll(resp.Body)
+  // if err != nil {
+  //   return &result, err
+  // }
+	//
+	// var bodyMap map[string]interface{}
+  // err = json.Unmarshal(body, &bodyMap)
+  // if err != nil {
+  //   return &result, err
+  // }
+	// result.ID = bodyMap["id"].(string)
+
+
+
+	return &result, err
 }
 
 // DeleteApplicant deletes an applicant by its id.
