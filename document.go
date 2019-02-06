@@ -23,6 +23,8 @@ const (
 	DocumentTypeUKBRP          DocumentType = "uk_biometric_residence_permit"
 	DocumentTypeTaxID          DocumentType = "tax_id"
 	DocumentTypeVoterID        DocumentType = "voter_id"
+	
+	DocumentTypeBankStatement  DocumentType = "bank_statement"
 
 	DocumentSideFront DocumentSide = "front"
 	DocumentSideBack  DocumentSide = "back"
