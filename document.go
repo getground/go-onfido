@@ -57,7 +57,7 @@ type Document struct {
 	Side         DocumentSide `json:"side,omitempty"`
 	IssuingCountry string `json:"issuing_country,omitempty"`
 
-	// Messages []string `json:"messages,omitempty"`
+	Messages []string `json:"messages,omitempty"`
 }
 
 
