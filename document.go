@@ -131,7 +131,10 @@ func (c *Client) UploadDocument(ctx context.Context, applicantID string, dr Docu
 	}
 
 	var resp Document
-	_, err = c.do(ctx, req, &resp)
+	var decoded []interface{}
+	_, err = c.do(ctx, req, &decoded)
+	fmt.Printf("%v\n", decoded)
+	
 	return &resp, err
 }
 
