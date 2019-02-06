@@ -37,10 +37,11 @@ type DocumentType string
 type DocumentSide string
 
 // DocumentRequest represents a document request to Onfido API
-type DocumentRequest struct {
-	File io.ReadSeeker
-	Type DocumentType
-	Side DocumentSide
+type DocumentRequest struct { 
+	File io.ReadSeeker `json:"file,omitempty"`
+	Type DocumentType `json:"type,omitempty"`
+	Side DocumentSide `json:"side,omitempty"`
+	IssuingCountry string `json:"issuing_country,omitempty"`
 }
 
 // Document represents a document in Onfido API
@@ -114,6 +115,9 @@ func (c *Client) UploadDocument(ctx context.Context, applicantID string, dr Docu
 		return nil, err
 	}
 	if err := writer.WriteField("side", string(dr.Side)); err != nil {
+		return nil, err
+	}
+	if err := writer.WriteField("issuing_country", string(dr.IssuingCountry)); err != nil {
 		return nil, err
 	}
 	if err := writer.Close(); err != nil {
