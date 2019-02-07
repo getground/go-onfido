@@ -96,7 +96,7 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 			escapeQuotes(fieldname), escapeQuotes(filename)))
 	h.Set("Content-Type", http.DetectContentType(buffer))
 	
-	fmt.Printf("Header is %+v\n", h)
+	//fmt.Printf("Header is %+v\n", h)
 
 	return writer.CreatePart(h)
 }
