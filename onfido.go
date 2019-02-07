@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"io/ioutil"
+	// "io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
 )
@@ -125,7 +125,9 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	if resp.Body != nil {
 		defer resp.Body.Close()
 	}
-
+	if c := resp.StatusCode; c < 200 || c > 299 {
+		return nil, handleResponseErr(resp)
+	}
 
 
 
@@ -148,15 +150,13 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	}
 
 
-	if err != nil {
-		bodyText, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Body is %v", string(bodyText))
-		fmt.Printf("Status code is %d\n", resp.StatusCode)
-
-		// if c := resp.StatusCode; c < 200 || c > 299 {
-		// 	return nil, handleResponseErr(resp)
-		// }
-	}
+	// if err != nil {
+	// 	bodyText, _ := ioutil.ReadAll(resp.Body)
+	// 	fmt.Printf("Body is %v", string(bodyText))
+	// 	fmt.Printf("Status code is %d\n", resp.StatusCode)
+	//
+	//
+	// }
 
 	// err = json.NewDecoder(resp.Body).Decode(v)
 	// fmt.Printf("err in do is %v", err)
