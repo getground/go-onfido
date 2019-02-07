@@ -5,6 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"time"
+
+	"net/http"
+	"io/ioutil"
+	"fmt"
 )
 
 // CheckType represents a check type (express, standard)
@@ -72,14 +76,27 @@ func (c *Client) CreateCheck(ctx context.Context, applicantID string, cr CheckRe
 		return nil, err
 	}
 
-	req, err := c.newRequest("POST", "/applicants/"+applicantID+"/checks", bytes.NewBuffer(jsonStr))
+
+	resp, err := http.Post("/applicants/"+applicantID+"/checks", "application/json", bytes.NewBuffer(jsonStr))
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("Response:\n%v\n", string(body))
 
-	var resp Check
-	_, err = c.do(ctx, req, &resp)
-	return &resp, err
+	return nil, nil
+	// req, err := c.newRequest("POST", "/applicants/"+applicantID+"/checks", bytes.NewBuffer(jsonStr))
+	// if err != nil {
+	// 	return nil, err
+	// }
+	//
+	// var resp Check
+	// _, err = c.do(ctx, req, &resp)
+	// return &resp, err
 }
 
 // GetCheck retrieves a check for the provided applicant by its ID.
