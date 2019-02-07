@@ -23,7 +23,7 @@ const (
 	DocumentTypeUKBRP          DocumentType = "uk_biometric_residence_permit"
 	DocumentTypeTaxID          DocumentType = "tax_id"
 	DocumentTypeVoterID        DocumentType = "voter_id"
-	
+
 	DocumentTypeBankStatement  DocumentType = "bank_statement"
 
 	DocumentSideFront DocumentSide = "front"
@@ -37,7 +37,7 @@ type DocumentType string
 type DocumentSide string
 
 // DocumentRequest represents a document request to Onfido API
-type DocumentRequest struct { 
+type DocumentRequest struct {
 	File io.ReadSeeker `json:"file,omitempty"`
 	Type DocumentType `json:"type,omitempty"`
 	Side DocumentSide `json:"side,omitempty"`
@@ -57,7 +57,7 @@ type Document struct {
 	Side         DocumentSide `json:"side,omitempty"`
 	IssuingCountry string `json:"issuing_country,omitempty"`
 
-	Messages []string `json:"messages,omitempty"`
+	// Messages []string `json:"messages,omitempty"`
 }
 
 
@@ -95,7 +95,7 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 		fmt.Sprintf(`form-data; name="%s"; filename="%s"`,
 			escapeQuotes(fieldname), escapeQuotes(filename)))
 	h.Set("Content-Type", http.DetectContentType(buffer))
-	
+
 	//fmt.Printf("Header is %+v\n", h)
 
 	return writer.CreatePart(h)
@@ -135,7 +135,7 @@ func (c *Client) UploadDocument(ctx context.Context, applicantID string, dr Docu
 
 	var resp Document
 	_, err = c.do(ctx, req, &resp)
-	
+
 	return &resp, err
 }
 
