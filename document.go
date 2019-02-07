@@ -88,6 +88,8 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 	if f, ok := file.(*os.File); ok {
 		filename = f.Name()
 	}
+	
+	filename = "foo.jpg"
 
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
