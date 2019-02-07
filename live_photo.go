@@ -64,6 +64,7 @@ func (c *Client) UploadLivePhoto(ctx context.Context, applicantID string, file i
 		return nil, err
 	}
 
+
 	var resp LivePhoto
 	_, err = c.do(ctx, req, &resp)
 
