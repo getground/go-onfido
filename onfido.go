@@ -184,6 +184,9 @@ func handleResponseErr(resp *http.Response) error {
 		onfidoErr = Error{}
 	}
 	onfidoErr.Resp = resp
+
+	fmt.Printf("Onfido error:\n%+v\n", onfidoErr)
+
 	return &onfidoErr
 }
 
