@@ -76,7 +76,7 @@ func escapeQuotes(s string) string {
 // file name, and file content type.
 // this is used instead of multipart.Writer.CreateFormFile because Onfido API
 // doesn't accept 'application/octet-stream' as content-type.
-func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeeker) (io.Writer, error) {
+func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeeker, filename string) (io.Writer, error) {
 	buffer := make([]byte, 512)
 	if _, err := file.Read(buffer); err != nil {
 		return nil, err
@@ -84,12 +84,11 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 	if _, err := file.Seek(0, 0); err != nil {
 		return nil, err
 	}
-	var filename string
-	if f, ok := file.(*os.File); ok {
-		filename = f.Name()
-	}
-	
-	filename = "foo.jpg"
+// 	var filename string
+// 	if f, ok := file.(*os.File); ok {
+// 		filename = f.Name()
+// 	}
+	//filename = "foo.jpg"
 
 	h := make(textproto.MIMEHeader)
 	h.Set("Content-Disposition",
@@ -104,11 +103,11 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 
 // UploadDocument uploads a document for the provided applicant.
 // see https://documentation.onfido.com/?shell#upload-document
-func (c *Client) UploadDocument(ctx context.Context, applicantID string, dr DocumentRequest) (*Document, error) {
+func (c *Client) UploadDocument(ctx context.Context, applicantID string, dr DocumentRequest, filename string) (*Document, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
-	part, err := createFormFile(writer, "file", dr.File)
+	part, err := createFormFile(writer, "file", dr.File, filename)
 	if err != nil {
 		return nil, err
 	}
