@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	// "io/ioutil"
+	"io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
 )
@@ -177,7 +177,12 @@ func handleResponseErr(resp *http.Response) error {
 	var onfidoErr Error
 	if resp.Body != nil && isJSONResponse(resp) {
 		defer resp.Body.Close()
+
+			bodyText, _ := ioutil.ReadAll(resp.Body)
+			fmt.Printf("Body is %v", string(bodyText))
+
 		if err := json.NewDecoder(resp.Body).Decode(&onfidoErr); err != nil {
+			log.Printf("Error decoding Onfido error: %v\n", err)
 			return err
 		}
 	} else {
