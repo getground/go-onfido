@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"io/ioutil"
+	// "io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
 )
@@ -38,10 +38,10 @@ type HTTPRequester interface {
 type Error struct {
 	Resp *http.Response
 	Err  struct {
-		ID     string                                 `json:"id"`
-		Type   string                                 `json:"type"`
-		Msg    string                                 `json:"message"`
-		Fields map[string]struct{ Messages []string } `json:"fields"`
+		ID     string                                 `json:"id,omitempty"`
+		Type   string                                 `json:"type,omitempty"`
+		Msg    string                                 `json:"message,omitempty"`
+		Fields map[string][]string 										`json:"fields,omitempty"`
 	} `json:"error"`
 }
 
@@ -178,8 +178,8 @@ func handleResponseErr(resp *http.Response) error {
 	if resp.Body != nil && isJSONResponse(resp) {
 		defer resp.Body.Close()
 
-			bodyText, _ := ioutil.ReadAll(resp.Body)
-			fmt.Printf("Body is %v", string(bodyText))
+		// bodyText, _ := ioutil.ReadAll(resp.Body)
+		// fmt.Printf("Body is %v", string(bodyText))
 
 		if err := json.NewDecoder(resp.Body).Decode(&onfidoErr); err != nil {
 			fmt.Printf("Error decoding Onfido error: %v\n", err)
