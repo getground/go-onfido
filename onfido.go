@@ -182,7 +182,7 @@ func handleResponseErr(resp *http.Response) error {
 			fmt.Printf("Body is %v", string(bodyText))
 
 		if err := json.NewDecoder(resp.Body).Decode(&onfidoErr); err != nil {
-			log.Printf("Error decoding Onfido error: %v\n", err)
+			fmt.Printf("Error decoding Onfido error: %v\n", err)
 			return err
 		}
 	} else {
