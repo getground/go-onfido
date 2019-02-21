@@ -10,6 +10,7 @@ import (
 const (
 	ReportNameIdentity         ReportName = "identity"
 	ReportNameDocument         ReportName = "document"
+	ReportNameProofOfAddress         ReportName = "proof_of_address"
 	ReportNameFacialSimilarity ReportName = "facial_similarity"
 	ReportNameStreetLevel      ReportName = "street_level"
 	ReportNameWatchlist      	 ReportName = "watchlist"
