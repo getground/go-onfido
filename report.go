@@ -53,6 +53,8 @@ type Report struct {
 	Options    map[string]interface{} `json:"options,omitempty"`
 	Breakdown  map[string]interface{} `json:"breakdown,omitempty"`
 	Properties map[string]interface{} `json:"properties,omitempty"`
+	
+	Documents []string `json:"documents,omitempty"`
 }
 
 // Reports represents a list of reports from the Onfido API
