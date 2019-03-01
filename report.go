@@ -10,7 +10,7 @@ import (
 const (
 	ReportNameIdentity         ReportName = "identity"
 	ReportNameDocument         ReportName = "document"
-	ReportNameProofOfAddress         ReportName = "proof_of_address"
+	ReportNameProofOfAddress   ReportName = "proof_of_address"
 	ReportNameFacialSimilarity ReportName = "facial_similarity"
 	ReportNameStreetLevel      ReportName = "street_level"
 	ReportNameWatchlist      	 ReportName = "watchlist"
@@ -54,7 +54,7 @@ type Report struct {
 	Options    map[string]interface{} `json:"options,omitempty"`
 	Breakdown  map[string]interface{} `json:"breakdown,omitempty"`
 	Properties map[string]interface{} `json:"properties,omitempty"`
-	
+
 // 	Documents []string `json:"documents,omitempty"`
 }
 

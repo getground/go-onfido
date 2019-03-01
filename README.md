@@ -1,8 +1,10 @@
-# go-onfido [![CircleCI](https://circleci.com/gh/uw-labs/go-onfido.svg?style=svg)](https://circleci.com/gh/uw-labs/go-onfido) [![Go Report Card](https://goreportcard.com/badge/github.com/uw-labs/go-onfido)](https://goreportcard.com/report/github.com/uw-labs/go-onfido)
+# go-onfido
+
+<!-- [![CircleCI](https://circleci.com/gh/getground/go-onfido.svg?style=svg)](https://circleci.com/gh/getground/go-onfido) [![Go Report Card](https://goreportcard.com/badge/github.com/getground/go-onfido)](https://goreportcard.com/report/github.com/getground/go-onfido) -->
 
 Client for the [Onfido API](https://documentation.onfido.com/)
 
-[![go-doc](https://godoc.org/github.com/uw-labs/go-onfido?status.svg)](https://godoc.org/github.com/uw-labs/go-onfido)
+[![go-doc](https://godoc.org/github.com/getground/go-onfido?status.svg)](https://godoc.org/github.com/getground/go-onfido)
 
 > This library was built for Utility Warehouse internal projects, so priority was given to supporting the
 features we needed. If the library is missing a feature from the API, raise an issue or ideally open a PR.
@@ -12,7 +14,7 @@ features we needed. If the library is missing a feature from the API, raise an i
 To install go-onfido, use `go get`:
 
 ```
-go get github.com/uw-labs/go-onfio
+go get github.com/getground/go-onfio
 ```
 
 ## Usage
@@ -29,6 +31,4 @@ Or you can instantiate usign the env variable `ONFIDO_TOKEN`
 client, err := onfido.NewClientFromEnv()
 ```
 
-Now checkout some of the [examples](https://github.com/uw-labs/go-onfido/tree/master/examples)
-
-
+Now checkout some of the [examples](https://github.com/getground/go-onfido/tree/master/examples)
