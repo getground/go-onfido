@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/getground/go-onfido"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	onfido "github.com/uw-labs/go-onfido"
 )
 
 func TestUploadDocument_NonOKResponse(t *testing.T) {
@@ -219,4 +219,72 @@ func TestListDocuments_DocumentsRetrieved(t *testing.T) {
 	if it.Err() != nil {
 		t.Fatal(it.Err())
 	}
+}
+
+func TestDownloadDocument(t *testing.T) {
+	applicantID := "541d040b-89f8-444b-8921-16b1333bf1c6"
+	documentID := "ce62d838-56f8-4ea5-98be-e7166d1dc33d"
+
+	dummy_content := []byte("hello world")
+
+	expected := onfido.DocumentDownload{
+		Size:    len(dummy_content),
+		Content: dummy_content,
+	}
+
+	m := mux.NewRouter()
+	m.HandleFunc("/applicants/{applicantId}/documents/{documentId}/download", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		assert.Equal(t, applicantID, vars["applicantId"])
+		assert.Equal(t, documentID, vars["documentId"])
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(dummy_content)
+	}).Methods("GET")
+	srv := httptest.NewServer(m)
+	defer srv.Close()
+
+	client := onfido.NewClient("123")
+	client.Endpoint = srv.URL
+
+	dd, err := client.DownloadDocument(context.Background(), applicantID, documentID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, expected.Size, dd.Size)
+	assert.Equal(t, expected.Content, dd.Content)
+}
+
+func TestDownloadDocument(t *testing.T) {
+	livePhotoID := "ce62d838-56f8-4ea5-98be-e7166d1dc33d"
+
+	dummy_live_photo := []byte("hi pretty")
+
+	expected := onfido.DocumentDownload{
+		Size:    len(dummy_live_photo),
+		Content: dummy_live_photo,
+	}
+
+	m := mux.NewRouter()
+	m.HandleFunc("/live_photos/{livePhotoID}/download", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		assert.Equal(t, livePhotoID, vars["livePhotoID"])
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(dummy_live_photo)
+	}).Methods("GET")
+	srv := httptest.NewServer(m)
+	defer srv.Close()
+
+	client := onfido.NewClient("123")
+	client.Endpoint = srv.URL
+
+	lp, err := client.GetLivePhotoDownload(context.Background(), livePhotoID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, expected.Size, lp.Size)
+	assert.Equal(t, expected.Content, lp.Content)
 }

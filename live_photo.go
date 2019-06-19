@@ -1,12 +1,14 @@
 package onfido
 
 import (
-  "bytes"
+	"bytes"
 	"context"
 	"encoding/json"
+
 	// "fmt"
 	"io"
 	"mime/multipart"
+
 	// "net/http"
 	// "net/textproto"
 	//"os"
@@ -14,25 +16,23 @@ import (
 	"time"
 )
 
-
 // type LivePhotoRequest struct {
 //
 // }
 
 type LivePhoto struct {
-  ID           string       `json:"id,omitempty"`
-  CreatedAt    *time.Time   `json:"created_at,omitempty"`
-  Href         string       `json:"href,omitempty"`
-  DownloadHref string       `json:"download_href,omitempty"`
-  FileName     string       `json:"file_name,omitempty"`
-  FileType     string       `json:"file_type,omitempty"`
-  FileSize     int          `json:"file_size,omitempty"`
+	ID           string     `json:"id,omitempty"`
+	CreatedAt    *time.Time `json:"created_at,omitempty"`
+	Href         string     `json:"href,omitempty"`
+	DownloadHref string     `json:"download_href,omitempty"`
+	FileName     string     `json:"file_name,omitempty"`
+	FileType     string     `json:"file_type,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"`
 }
 
 type LivePhotos struct {
 	LivePhotos []*LivePhoto `json:"live_photos"`
 }
-
 
 func (c *Client) UploadLivePhoto(ctx context.Context, applicantID string, file io.ReadSeeker, filename string) (*LivePhoto, error) {
 	body := &bytes.Buffer{}
@@ -64,13 +64,11 @@ func (c *Client) UploadLivePhoto(ctx context.Context, applicantID string, file i
 		return nil, err
 	}
 
-
 	var resp LivePhoto
 	_, err = c.do(ctx, req, &resp)
 
 	return &resp, err
 }
-
 
 func (c *Client) GetLivePhoto(ctx context.Context, id string) (*LivePhoto, error) {
 	req, err := c.newRequest("GET", "/live_photos/"+id, nil)
@@ -79,6 +77,17 @@ func (c *Client) GetLivePhoto(ctx context.Context, id string) (*LivePhoto, error
 	}
 
 	var resp LivePhoto
+	_, err = c.do(ctx, req, &resp)
+	return &resp, err
+}
+
+func (c *Client) GetLivePhotoDownload(ctx context.Context, id string) (*DocumentDownload, error) {
+	req, err := c.newRequest("GET", "/live_photos/"+id+"/download", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp DocumentDownload
 	_, err = c.do(ctx, req, &resp)
 	return &resp, err
 }

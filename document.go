@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
+
 	//"os"
 	"strings"
 	"time"
@@ -24,7 +25,7 @@ const (
 	DocumentTypeTaxID          DocumentType = "tax_id"
 	DocumentTypeVoterID        DocumentType = "voter_id"
 
-	DocumentTypeBankStatement  DocumentType = "bank_statement"
+	DocumentTypeBankStatement DocumentType = "bank_statement"
 
 	DocumentSideFront DocumentSide = "front"
 	DocumentSideBack  DocumentSide = "back"
@@ -38,32 +39,44 @@ type DocumentSide string
 
 // DocumentRequest represents a document request to Onfido API
 type DocumentRequest struct {
-	File io.ReadSeeker `json:"file,omitempty"`
-	Type DocumentType `json:"type,omitempty"`
-	Side DocumentSide `json:"side,omitempty"`
-	IssuingCountry string `json:"issuing_country,omitempty"`
+	File           io.ReadSeeker `json:"file,omitempty"`
+	Type           DocumentType  `json:"type,omitempty"`
+	Side           DocumentSide  `json:"side,omitempty"`
+	IssuingCountry string        `json:"issuing_country,omitempty"`
 }
 
 // Document represents a document in Onfido API
 type Document struct {
-	ID           string       `json:"id,omitempty"`
-	CreatedAt    *time.Time   `json:"created_at,omitempty"`
-	Href         string       `json:"href,omitempty"`
-	DownloadHref string       `json:"download_href,omitempty"`
-	FileName     string       `json:"file_name,omitempty"`
-	FileType     string       `json:"file_type,omitempty"`
-	FileSize     int          `json:"file_size,omitempty"`
-	Type         DocumentType `json:"type,omitempty"`
-	Side         DocumentSide `json:"side,omitempty"`
-	IssuingCountry string `json:"issuing_country,omitempty"`
+	ID             string       `json:"id,omitempty"`
+	CreatedAt      *time.Time   `json:"created_at,omitempty"`
+	Href           string       `json:"href,omitempty"`
+	DownloadHref   string       `json:"download_href,omitempty"`
+	FileName       string       `json:"file_name,omitempty"`
+	FileType       string       `json:"file_type,omitempty"`
+	FileSize       int          `json:"file_size,omitempty"`
+	Type           DocumentType `json:"type,omitempty"`
+	Side           DocumentSide `json:"side,omitempty"`
+	IssuingCountry string       `json:"issuing_country,omitempty"`
 
 	// Messages []string `json:"messages,omitempty"`
 }
 
-
 // Documents represents a list of documents from the Onfido API
 type Documents struct {
 	Documents []*Document `json:"documents"`
+}
+
+// Document content represents the content of the document download from Onfido API
+type DocumentDownload struct {
+	Size    int
+	Content []byte
+}
+
+func (d *DocumentDownload) Write(data []byte) (n int, err error) {
+	d.Content = data
+	d.Size = len(data)
+
+	return len(data), nil
 }
 
 var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
@@ -84,10 +97,10 @@ func createFormFile(writer *multipart.Writer, fieldname string, file io.ReadSeek
 	if _, err := file.Seek(0, 0); err != nil {
 		return nil, err
 	}
-// 	var filename string
-// 	if f, ok := file.(*os.File); ok {
-// 		filename = f.Name()
-// 	}
+	// 	var filename string
+	// 	if f, ok := file.(*os.File); ok {
+	// 		filename = f.Name()
+	// 	}
 	//filename = "foo.jpg"
 
 	h := make(textproto.MIMEHeader)
@@ -148,6 +161,17 @@ func (c *Client) GetDocument(ctx context.Context, applicantID, id string) (*Docu
 	}
 
 	var resp Document
+	_, err = c.do(ctx, req, &resp)
+	return &resp, err
+}
+
+func (c *Client) DownloadDocument(ctx context.Context, applicantID, id string) (*DocumentDownload, error) {
+	req, err := c.newRequest("GET", "/applicants/"+applicantID+"/documents/"+id+"/download", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp DocumentDownload
 	_, err = c.do(ctx, req, &resp)
 	return &resp, err
 }
