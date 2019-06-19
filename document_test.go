@@ -220,3 +220,38 @@ func TestListDocuments_DocumentsRetrieved(t *testing.T) {
 		t.Fatal(it.Err())
 	}
 }
+
+func TestDownloadDocument(t *testing.T) {
+	applicantID := "541d040b-89f8-444b-8921-16b1333bf1c6"
+	documentID := "ce62d838-56f8-4ea5-98be-e7166d1dc33d"
+
+	dummy_content := []byte("hello world")
+
+	expected := onfido.DocumentDownload{
+		Size:    len(dummy_content),
+		Content: dummy_content,
+	}
+
+	m := mux.NewRouter()
+	m.HandleFunc("/applicants/{applicantId}/documents/{documentId}/download", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		assert.Equal(t, applicantID, vars["applicantId"])
+		assert.Equal(t, documentID, vars["documentId"])
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(dummy_content)
+	}).Methods("GET")
+	srv := httptest.NewServer(m)
+	defer srv.Close()
+
+	client := onfido.NewClient("123")
+	client.Endpoint = srv.URL
+
+	dd, err := client.DownloadDocument(context.Background(), applicantID, documentID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, expected.Size, dd.Size)
+	assert.Equal(t, expected.Content, dd.Content)
+}
