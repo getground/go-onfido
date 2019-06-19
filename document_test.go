@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/getground/go-onfido"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	onfido "github.com/uw-labs/go-onfido"
 )
 
 func TestUploadDocument_NonOKResponse(t *testing.T) {
@@ -254,4 +254,37 @@ func TestDownloadDocument(t *testing.T) {
 
 	assert.Equal(t, expected.Size, dd.Size)
 	assert.Equal(t, expected.Content, dd.Content)
+}
+
+func TestDownloadDocument(t *testing.T) {
+	livePhotoID := "ce62d838-56f8-4ea5-98be-e7166d1dc33d"
+
+	dummy_live_photo := []byte("hi pretty")
+
+	expected := onfido.DocumentDownload{
+		Size:    len(dummy_live_photo),
+		Content: dummy_live_photo,
+	}
+
+	m := mux.NewRouter()
+	m.HandleFunc("/live_photos/{livePhotoID}/download", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		assert.Equal(t, livePhotoID, vars["livePhotoID"])
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(dummy_live_photo)
+	}).Methods("GET")
+	srv := httptest.NewServer(m)
+	defer srv.Close()
+
+	client := onfido.NewClient("123")
+	client.Endpoint = srv.URL
+
+	lp, err := client.GetLivePhotoDownload(context.Background(), livePhotoID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Equal(t, expected.Size, lp.Size)
+	assert.Equal(t, expected.Content, lp.Content)
 }
