@@ -87,7 +87,7 @@ func (c *Client) GetLivePhotoDownload(ctx context.Context, id string) (*Document
 		return nil, err
 	}
 
-	blob, err := c.download(ctx, req, &resp)
+	blob, err := c.download(ctx, req)
 	return &DocumentDownload{Content: blob, Size: len(blob)}, err
 }
 

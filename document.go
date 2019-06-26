@@ -171,7 +171,7 @@ func (c *Client) DownloadDocument(ctx context.Context, applicantID, id string) (
 		return nil, err
 	}
 
-	blob, err := c.download(ctx, req, &resp)
+	blob, err := c.download(ctx, req)
 	return &DocumentDownload{Content: blob, Size: len(blob)}, err
 }
 
