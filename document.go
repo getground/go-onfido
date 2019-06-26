@@ -171,9 +171,8 @@ func (c *Client) DownloadDocument(ctx context.Context, applicantID, id string) (
 		return nil, err
 	}
 
-	var resp DocumentDownload
-	_, err = c.do(ctx, req, &resp)
-	return &resp, err
+	blob, err := c.download(ctx, req)
+	return &DocumentDownload{Content: blob, Size: len(blob)}, err
 }
 
 // DocumentIter represents a document iterator

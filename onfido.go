@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
 	// "io/ioutil"
 
 	"github.com/tomnomnom/linkheader"
@@ -38,10 +40,10 @@ type HTTPRequester interface {
 type Error struct {
 	Resp *http.Response
 	Err  struct {
-		ID     string                                 `json:"id,omitempty"`
-		Type   string                                 `json:"type,omitempty"`
-		Msg    string                                 `json:"message,omitempty"`
-		Fields map[string][]string 										`json:"fields,omitempty"`
+		ID     string              `json:"id,omitempty"`
+		Type   string              `json:"type,omitempty"`
+		Msg    string              `json:"message,omitempty"`
+		Fields map[string][]string `json:"fields,omitempty"`
 	} `json:"error"`
 }
 
@@ -110,7 +112,6 @@ func (c *Client) newRequest(method, uri string, body io.Reader) (*http.Request, 
 	return req, nil
 }
 
-
 func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
 	req.WithContext(ctx)
 	resp, err := c.HTTPClient.Do(req)
@@ -128,8 +129,6 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	if c := resp.StatusCode; c < 200 || c > 299 {
 		return nil, handleResponseErr(resp)
 	}
-
-
 
 	if v != nil {
 		if w, ok := v.(io.Writer); ok {
@@ -149,7 +148,6 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 		}
 	}
 
-
 	// if err != nil {
 	// 	bodyText, _ := ioutil.ReadAll(resp.Body)
 	// 	fmt.Printf("Body is %v", string(bodyText))
@@ -161,12 +159,33 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	// err = json.NewDecoder(resp.Body).Decode(v)
 	// fmt.Printf("err in do is %v", err)
 	// var bodyMap map[string]interface{}
-  // err = json.Unmarshal(body, &bodyMap)
-  // if err != nil {
-  //   return err
-  // }
+	// err = json.Unmarshal(body, &bodyMap)
+	// if err != nil {
+	//   return err
+	// }
 
 	return resp, err
+}
+
+func (c *Client) download(ctx context.Context, req *http.Request) ([]byte, error) {
+	req.WithContext(ctx)
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+			return nil, err
+		}
+	}
+	if resp.Body != nil {
+		defer resp.Body.Close()
+	}
+	if c := resp.StatusCode; c < 200 || c > 299 {
+		return nil, handleResponseErr(resp)
+	}
+
+	return ioutil.ReadAll(resp.Body)
 }
 
 func isJSONResponse(resp *http.Response) bool {
