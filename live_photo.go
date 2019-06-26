@@ -88,8 +88,8 @@ func (c *Client) GetLivePhotoDownload(ctx context.Context, id string) (*Document
 	}
 
 	var resp DocumentDownload
-	_, err = c.do(ctx, req, &resp)
-	return &resp, err
+	bob, err = c.download(ctx, req, &resp)
+	return &resp{Content: bob, Size: len(bob)}, err
 }
 
 // LivePhotoIter represents a LivePhoto iterator
