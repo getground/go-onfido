@@ -167,7 +167,7 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	return resp, err
 }
 
-func (c *Client) download(ctx context.Context, req *http.Request, dd DocumentDownload) ([]byte, error) {
+func (c *Client) download(ctx context.Context, req *http.Request) ([]byte, error) {
 	req.WithContext(ctx)
 	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
