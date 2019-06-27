@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
-
 	// "io/ioutil"
 )
 
@@ -66,31 +66,34 @@ func (c *Client) CreateApplicant(ctx context.Context, a Applicant) (*Applicant, 
 		return nil, err
 	}
 
+	fmt.Println("here1")
 	req, err := c.newRequest("POST", "/applicants", bytes.NewBuffer(jsonStr))
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
+	fmt.Println("here2")
 	var result Applicant
 	_, err = c.do(ctx, req, &result)
 	if err != nil {
+		fmt.Println(err)
 		return &result, err
 	}
 	// defer resp.Body.Close()
 	// body, err := ioutil.ReadAll(resp.Body)
-  // if err != nil {
-  //   return &result, err
-  // }
+	// if err != nil {
+	//   return &result, err
+	// }
 	//
 	// var bodyMap map[string]interface{}
-  // err = json.Unmarshal(body, &bodyMap)
-  // if err != nil {
-  //   return &result, err
-  // }
+	// err = json.Unmarshal(body, &bodyMap)
+	// if err != nil {
+	//   return &result, err
+	// }
 	// result.ID = bodyMap["id"].(string)
 
-
-
+	fmt.Println("here3")
 	return &result, err
 }
 
