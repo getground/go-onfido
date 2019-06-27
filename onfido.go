@@ -127,6 +127,9 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 		defer resp.Body.Close()
 	}
 	if c := resp.StatusCode; c < 200 || c > 299 {
+		fmt.Println("+++++++++++++++++++++++++++++++")
+		fmt.Println(err)
+		fmt.Println("+++++++++++++++++++++++++++++++")
 		return nil, handleResponseErr(resp)
 	}
 
