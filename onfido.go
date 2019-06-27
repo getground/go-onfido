@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -128,8 +129,12 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	}
 	if c := resp.StatusCode; c < 200 || c > 299 {
 		fmt.Println("+++++++++++++++++++++++++++++++")
-		fmt.Println(resp)
-		fmt.Println(resp.Body)
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		bodyString := string(bodyBytes)
+		fmt.Println(bodyString)
 		fmt.Println("+++++++++++++++++++++++++++++++")
 		return nil, handleResponseErr(resp)
 	}
