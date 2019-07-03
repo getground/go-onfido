@@ -9,6 +9,10 @@ Client for the [Onfido API](https://documentation.onfido.com/)
 > This library was built for Utility Warehouse internal projects, so priority was given to supporting the
 features we needed. If the library is missing a feature from the API, raise an issue or ideally open a PR.
 
+## Important
+
+This library is used by [Module Core](https://github.com/getground/module-core). Do `go get -u github.com/getground/go-onfido` there if you wish to update the module version used.
+
 ## Installation
 
 To install go-onfido, use `go get`:
