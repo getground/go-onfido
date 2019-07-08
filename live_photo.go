@@ -48,16 +48,12 @@ func (c *Client) UploadLivePhoto(ctx context.Context, applicantID string, file i
 	if err := writer.WriteField("applicant_id", applicantID); err != nil {
 		return nil, err
 	}
-	// if err := writer.WriteField("side", string(dr.Side)); err != nil {
-	// 	return nil, err
-	// }
-	// if err := writer.WriteField("issuing_country", string(dr.IssuingCountry)); err != nil {
-	// 	return nil, err
-	// }
+	if err := writer.WriteField("advanced_validation", "false"); err != nil {
+		return nil, err
+	}
 	if err := writer.Close(); err != nil {
 		return nil, err
 	}
-
 	req, err := c.newRequest("POST", "/live_photos", body)
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	if err != nil {
