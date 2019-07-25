@@ -66,14 +66,12 @@ func (c *Client) CreateApplicant(ctx context.Context, a Applicant) (*Applicant, 
 		return nil, err
 	}
 
-	fmt.Println("here1")
 	req, err := c.newRequest("POST", "/applicants", bytes.NewBuffer(jsonStr))
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	fmt.Println("here2")
 	var result Applicant
 	_, err = c.do(ctx, req, &result)
 	if err != nil {
@@ -93,7 +91,6 @@ func (c *Client) CreateApplicant(ctx context.Context, a Applicant) (*Applicant, 
 	// }
 	// result.ID = bodyMap["id"].(string)
 
-	fmt.Println("here3")
 	return &result, err
 }
 
