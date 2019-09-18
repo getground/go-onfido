@@ -13,7 +13,7 @@ const (
 	ReportNameProofOfAddress   ReportName = "proof_of_address"
 	ReportNameFacialSimilarity ReportName = "facial_similarity"
 	ReportNameStreetLevel      ReportName = "street_level"
-	ReportNameWatchlist      	 ReportName = "watchlist"
+	ReportNameWatchlist        ReportName = "watchlist"
 
 	ReportResultClear        ReportResult = "clear"
 	ReportResultConsider     ReportResult = "consider"
@@ -54,8 +54,7 @@ type Report struct {
 	Options    map[string]interface{} `json:"options,omitempty"`
 	Breakdown  map[string]interface{} `json:"breakdown,omitempty"`
 	Properties map[string]interface{} `json:"properties,omitempty"`
-
-// 	Documents []string `json:"documents,omitempty"`
+	Documents  []Document             `json:"documents,omitempty"`
 }
 
 // Reports represents a list of reports from the Onfido API
