@@ -6,8 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"net/http"
 	"os"
 )
 
@@ -74,16 +72,9 @@ func (wh *Webhook) ValidateSignature(body []byte, signature string) error {
 	return nil
 }
 
-// ParseFromRequest parses the webhook request body and returns
+// ParseFromBytes parses the webhook request body and returns
 // it as WebhookRequest if the request signature is valid.
-func (wh *Webhook) ParseFromRequest(req *http.Request) (*WebhookRequest, error) {
-	signature := req.Header.Get(WebhookSignatureHeader)
-	body, err := ioutil.ReadAll(req.Body)
-	defer req.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
+func (wh *Webhook) ParseFromBytes(body []byte, signature string) (*WebhookRequest, error) {
 	if err := wh.ValidateSignature(body, signature); err != nil {
 		return nil, err
 	}
