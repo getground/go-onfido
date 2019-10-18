@@ -74,7 +74,7 @@ func (wh *Webhook) ValidateSignature(body []byte, signature string) error {
 
 // ParseFromBytes parses the webhook request body and returns
 // it as WebhookRequest if the request signature is valid.
-func (wh *Webhook) ParseFromBytes(body []byte, signature string) (*WebhookRequest, error) {
+func (wh *Webhook) ParseWebhookBody(body []byte, signature string) (*WebhookRequest, error) {
 	if err := wh.ValidateSignature(body, signature); err != nil {
 		return nil, err
 	}
