@@ -79,10 +79,10 @@ func (wh *Webhook) ValidateSignature(body []byte, signature string) error {
 func (wh *Webhook) ParseFromRequest(req *http.Request) (*WebhookRequest, error) {
 	signature := req.Header.Get(WebhookSignatureHeader)
 	body, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	defer req.Body.Close()
 
 	if err := wh.ValidateSignature(body, signature); err != nil {
 		return nil, err
