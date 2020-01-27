@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/getground/go-onfido"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	onfido "github.com/uw-labs/go-onfido"
 )
 
 func TestPickAddresses_EmptyPostcode(t *testing.T) {
